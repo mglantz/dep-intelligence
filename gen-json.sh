@@ -15,8 +15,13 @@ else
 	if [ "$?" -eq 0 ]; then
 		APK="yes"
 	else
-		echo "$0: Unknown package manager"
-		exit 1
+		which apt-get
+		if [ "$?" -eq 0 ]; then
+			APTGET="yes"
+		else
+			echo "$0: Unknown package manager"
+			exit 1
+		fi
 	fi
 fi
 
@@ -24,6 +29,9 @@ if [ "$RPM" == "yes" ]; then
 	dnf install -y file binutils >/dev/null
 elif [ "$APK" == "yes" ]; then
 	apk add file binutils
+elif [ "$APTGET" == "yes" ]; then
+	apt-get update
+	apt-get -y install binutils file wget
 fi
 
 # Functions in the kernels syscall interface documented in latest syscalls manpage in F32
@@ -59,7 +67,7 @@ then
 				fi
 			done
 		done|sort -u|tr '[:upper:]' '[:lower:]'|grep -v "@"|grep -vw "[a-z]"|grep -v " _" >$1.all.raw
-	elif [ "$APK" == "yes" ]
+	elif [ "$APK" == "yes" -o "$APTGET" == "yes" ]
 	then
 		for file in $(find . -type f|grep -v kernel)
 		do
