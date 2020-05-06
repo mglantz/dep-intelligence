@@ -50,45 +50,47 @@ then
 			do	
 				if file $file|grep "ELF 64" >/dev/null
 				then
+					filemd5=$(md5sum $file|awk '{ print $1 }')
 					for syscall in $(nm --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
-						if echo $syscalls|grep "$syscall" >/dev/null
+						if echo $syscalls|grep -w "$(echo $syscall|cut -d'@' -f1)" >/dev/null
 						then
-							echo "$therpm $syscall"
+							echo "$filemd5 $syscall"
 						fi	
 					done
 					for syscall in $(nm -D --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
-						if echo $syscalls|grep "$syscall" >/dev/null
+						if echo $syscalls|grep -w "$(echo $syscall|cut -d'@' -f1)" >/dev/null
 						then
-							echo "$therpm $syscall";
+							echo "$filemd5 $syscall";
 						fi
 					done
 				fi
 			done
-		done|sort -u|tr '[:upper:]' '[:lower:]'|grep "@" grep -vw "[a-z]"|grep -v " _" >$1.all.raw
+		done|sort -u|tr '[:upper:]' '[:lower:]'|grep '@'|grep -vw "[a-z]"|grep -v " _" >$1.all.raw
 	elif [ "$APK" == "yes" -o "$APTGET" == "yes" ]
 	then
 		for file in $(find . -type f|grep -v kernel)
 		do
 				if file $file|grep "ELF 64" >/dev/null
 				then
+					filemd5=$(md5sum $file|awk '{ print $1 }')
 					for syscall in $(nm --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
-						if echo $syscalls|grep "$syscall" >/dev/null
+						if echo $syscalls|grep "$(echo $syscall|cut -d'@' -f1)" >/dev/null
 						then
-							echo "$file $syscall"
+							echo "$filemd5 $syscall"
 						fi
 					done
 					for syscall in $(nm -D --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
-						if echo $syscalls|grep "$syscall" >/dev/null
+						if echo $syscalls|grep "$(echo $syscall|cut -d'@' -f1)" >/dev/null
 						then
-							echo "$file $syscall";
+							echo "$filemd5 $syscall";
 						fi
 					done
 				fi
-		done|sort -u|tr '[:upper:]' '[:lower:]'|grep "@"|grep -vw "[a-z]"|grep -v " _" >$1.all.raw
+		done|sort -u|tr '[:upper:]' '[:lower:]'|grep '@'|grep -vw "[a-z]"|grep -v " _" >$1.all.raw
 	fi
 fi
 
