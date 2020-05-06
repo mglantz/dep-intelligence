@@ -87,7 +87,7 @@ do
 	do
 		echo "{\"source\": \"$syscall\", \"target\": \"hardware\", \"value\": 1}," >>$1.$item.csv
 	done
-	echo "{\"source\": \"hardware\", \"target\": \"hardware\", \"value\": 1} ], \"node\" :[" >>$1.$item.csv
+	echo "{\"source\": \"hardware\", \"target\": \"hardware\", \"value\": 1} ], \"nodes\" :[" >>$1.$item.csv
 done
 
 # Add IDs for RPMs, kernel syscalls and hardware at the end
