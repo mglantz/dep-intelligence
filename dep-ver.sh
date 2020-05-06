@@ -50,14 +50,14 @@ then
 			do	
 				if file $file|grep "ELF 64" >/dev/null
 				then
-					for syscall in $(nm $file 2>/dev/null|grep U|awk '{ print $2 }')
+					for syscall in $(nm --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
 						if echo $syscalls|grep "$syscall" >/dev/null
 						then
 							echo "$therpm $syscall"
 						fi	
 					done
-					for syscall in $(nm -D $file 2>/dev/null|grep U|awk '{ print $2 }')
+					for syscall in $(nm -D --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 					do
 						if echo $syscalls|grep "$syscall" >/dev/null
 						then
