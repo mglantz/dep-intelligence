@@ -42,11 +42,7 @@ then
 		filemd5=$(md5sum $file|awk '{ print $1 }')
 		if file $file|grep "ELF 64" >/dev/null
 		then
-			for syscall in $(nm --with-symbol-versions $file 2>/dev/null|egrep -iw '(u|w)'|awk '{ print $2 }')
-			do
-				echo "$filemd5 $syscall"
-			done
-			for syscall in $(nm --with-symbol-versions $file 2>/dev/null|egrep -iw '(t|d)' |awk '{ print $3 }')
+			for syscall in $(nm --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
 			do
 				echo "$filemd5 $syscall"
 			done
