@@ -38,7 +38,7 @@ if echo $2|grep -i new >/dev/null
 then
 	rm -f $1*
 	# excluding sys, proc and tmp
-	for file in (find $(find / -maxdepth 1 -type d|grep -v proc|grep -v sys|grep -v tmp|grep -vw "/"|grep -v home|grep -v "lost+found") -type f)
+	for file in $(find $(find / -maxdepth 1 -type d|grep -v proc|grep -v sys|grep -v tmp|grep -vw "/"|grep -v home|grep -v "lost+found") -type f)
 	do
 		filemd5=$(md5sum $file|awk '{ print $1 }')
 		if file $file|grep "ELF 64" >/dev/null
