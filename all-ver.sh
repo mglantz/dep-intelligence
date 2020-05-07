@@ -47,6 +47,10 @@ then
 			do
 				echo "$filemd5 $syscall"
 			done
+			for syscall in $(nm -D --with-symbol-versions $file 2>/dev/null|grep U|awk '{ print $2 }')
+			do
+				echo "$filemd5 $syscall"
+			done
 		else
 			echo "$filemd5 $file"
 		fi	
