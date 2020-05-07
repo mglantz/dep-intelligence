@@ -38,7 +38,7 @@ if echo $2|grep -i new >/dev/null
 then
 	rm -f $1*
 	# excluding sys, proc and tmp
-	for file in $(find $(ls|grep -v sys|grep -v proc|grep -v tmp) -type f)
+	for file in find $(find / -maxdepth 1 -type d|grep -v proc|grep -v sys|grep -v tmp|grep -vw "/"|grep -v home|grep -v "lost+found") -type f)
 	do
 		filemd5=$(md5sum $file|awk '{ print $1 }')
 		if file $file|grep "ELF 64" >/dev/null
@@ -48,7 +48,7 @@ then
 				echo "$filemd5 $syscall"
 			done
 		else
-			echo "$filemd5 notelf"
+			echo "$filemd5 $file"
 		fi	
 	done|tr '[:upper:]' '[:lower:]'|sort -u>$1.all.deps
 fi
