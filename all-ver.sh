@@ -39,9 +39,9 @@ then
 	rm -f $1*
 	for file in $(find . -type f)
 	do
+		filemd5=$(md5sum $file|awk '{ print $1 }')
 		if file $file|grep "ELF 64" >/dev/null
 		then
-			filemd5=$(md5sum $file|awk '{ print $1 }')
 			for syscall in $(nm --with-symbol-versions $file 2>/dev/null|egrep -iw '(u|w)'|awk '{ print $2 }')
 			do
 				echo "$filemd5 $syscall"
@@ -50,6 +50,8 @@ then
 			do
 				echo "$filemd5 $syscall"
 			done
-		fi
+		else
+			echo "$filemd5 notelf"
+		fi	
 	done|tr '[:upper:]' '[:lower:]'|sort -u>$1.all.deps
 fi
